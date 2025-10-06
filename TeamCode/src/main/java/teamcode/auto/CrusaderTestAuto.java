@@ -19,6 +19,7 @@ public class CrusaderTestAuto extends LinearOpMode {
     private DcMotor         rightFrontDrive;
     private DcMotor         leftRearDrive;
     private DcMotor         rightRearDrive;
+    //private DcMotor         launcher;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -83,8 +84,7 @@ public class CrusaderTestAuto extends LinearOpMode {
         // encoderDrive(DRIVE_SPEED,-13,5,"strafe left");
         //robot.bottomCollectorWholeSpin.setPosition(.4);
         //robot.bottomCollectorSpinChain.setPosition(2);
-        Drive(DRIVE_SPEED,
-                10, 30, "goFar");
+        Drive(DRIVE_SPEED, 10, 30, "goFar");
 
         sleep(1000);
         //turn(DRIVE_SPEED, 1, 5, "turnleft");

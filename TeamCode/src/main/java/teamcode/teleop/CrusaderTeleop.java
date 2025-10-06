@@ -482,11 +482,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //@Disabled;
 public class CrusaderTeleop<DcMotorAccess> extends OpMode {
 
-    public AudioManager rightFrontDrive;
-    public AudioManager leftFrontDrive;
-    public AudioManager rightRearDrive;
-    public AudioManager leftRearDrive;
-    CrusaderTeleop tester = new CrusaderTeleop();
+    public DcMotor rightFrontDrive;
+    public DcMotor leftFrontDrive;
+    public DcMotor rightRearDrive;
+    public DcMotor leftRearDrive;
+    public DcMotor launcher;
 
     //final double COUNTS_PER_MOTOR_REV = 480;    // eg: TETRIX Motor Encoder
     //final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
@@ -495,7 +495,7 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
     //(WHEEL_DIAMETER_INCHES * 3.1415);
     //final double DRIVE_SPEED = 2;
 
-    CrusaderTeleop robot = new CrusaderTeleop(); //defines variable "robot"
+    //CrusaderTeleop robot = new CrusaderTeleop(); //defines variable "robot"
 
     double countsPerMotorRev = 480;
     double driveGearReduction = 1.0;
@@ -513,7 +513,7 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
 
     int driveMode= 0;
 
-    public DcMotor launcher;
+
 
     //following code runs when driver hits init
     @Override
@@ -521,13 +521,19 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         /* Initializes the hardware variables.
            The init() method in the hardware class does all the work here
          */
-        //motor1 = hardwareMap.get(DcMotor.class, );
+        //sets the DcMotor variables to be mapped to the robot
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFrontDrive");
+        rightRearDrive  = hardwareMap.get(DcMotor.class, "rightRearDrive");
+        leftRearDrive   = hardwareMap.get(DcMotor.class, "leftRearDrive");
+        //launcher        = hardwareMap.get(DcMotor.class, "launcher");
+
         //Telemetry data sets encoder values to 0, signifies robot waiting
         telemetry.addData("Say", "Hello Mr.Driver");
-        robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER.ordinal());
-        robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER.ordinal());
-        robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER.ordinal());
-        robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER.ordinal());
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
@@ -537,10 +543,10 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         double twist = 0.7 * gamepad1.right_stick_x;
         //formula to allow McKenna wheels to strafe and spin
         double[] speeds = {
-                (drive + strafe + twist),
-                (drive - strafe + twist),
-                (drive + strafe - twist),
-                (drive - strafe - twist)
+                (-drive + strafe + twist), //right front drive
+                (-drive - strafe - twist), //left front drive
+                (drive + strafe - twist), //right rear drive
+                (-drive + strafe - twist) //left rear drive
         };
 
         //sets the speed of each wheel
@@ -551,16 +557,28 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         if (max < Math.abs(speeds[3])) max = Math.abs(speeds[3]);
 
         if (max > 1) {
-            for (int i = 0; true; i++) speeds[i] /=max;
+            for (int i = 0; i < speeds.length; i++) { // Correct loop condition
+                speeds[i] /= max;
+            }
         }
         //assigns each wheel to an item in the speeds list
-        robot.rightFrontDrive.setMode((int) speeds[0]); //possibly change "setMode" to "setPower"
-        robot.leftFrontDrive.setMode((int) speeds[1]);
-        robot.rightRearDrive.setMode((int) speeds[2]);
-        robot.leftRearDrive.setMode((int) speeds[3]);
+        //keep setPower because it is a DcMotor, not an audioManager
+        rightFrontDrive.setPower(speeds[0]);
+        leftFrontDrive.setPower(speeds[1]);
+        rightRearDrive.setPower(speeds[2]);
+        leftRearDrive.setPower(speeds[3]);
     }
     @Override
     public void stop () {
+        // Set all drive motor power to zero
+        rightFrontDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightRearDrive.setPower(0);
+        leftRearDrive.setPower(0);
 
+        // Set the launcher motor power to zero (assuming it's a moving part)
+        //if (launcher != null) {
+        //    launcher.setPower(0);
+        //}
     }
 }

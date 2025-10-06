@@ -2,6 +2,7 @@ package teamcode.hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -43,7 +44,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * This is NOT an opmode.
  *
  * This class can be used to define all the specific hardware for a single robot.
- * In this case that robot is a Pushbot.
+ * In this case that robot is a Pushbot.*
  * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
  *
  * This hardware class assumes the following device names have been configured on the robot:
@@ -55,6 +56,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
+//*ROBOT IS NO LONGER A PUSHBOT
 public class CrusaderHardware extends OpMode {
     /* Public OpMode members. */
     public DcMotor leftFrontDrive   = null;
@@ -62,6 +64,7 @@ public class CrusaderHardware extends OpMode {
     public DcMotor  rightFrontDrive   = null;
     public DcMotor  rightRearDrive    = null;
     public DcMotor launcher = null;
+
     //public DcMotor  armExtension   = null;
     //public DcMotor  armRotate   = null;
     // public DcMotor  craneRotateChain = null;
@@ -101,6 +104,7 @@ public class CrusaderHardware extends OpMode {
         rightFrontDrive  = hwMap.get(DcMotor.class, "rightFrontDrive");
         rightRearDrive  = hwMap.get(DcMotor.class, "rightRearDrive");
         launcher = hwMap.get(DcMotor.class, "launcher");
+
 //        armExtension = hwMap.get(DcMotor.class, "armExtension");
 //        armRotate = hwMap.get(DcMotor.class, "armRotate");
 //        claw = hwMap.get(Servo.class, "claw");
@@ -118,12 +122,14 @@ public class CrusaderHardware extends OpMode {
 
 
 
-        // Assigns the rotation to the individual wheels
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE); // reverse on ROTC, Reverse on Comp. Bot
-        leftRearDrive.setDirection(DcMotor.Direction.REVERSE); // Forward on ROTC, Reverse on Comp Bot
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);// Forward on ROTC, Forward on Comp Bot
-        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);// Reverse on ROTC, Forward on Comp Bot
+        // Assigns the rotation to the individual wheels, makes each motor spin the wheel forward or backward
+        //the wheels will not all be forward or backward, they will be different due to different motor orientations
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD); //Forward on Comp. Bot, sets which way the wheel spins
+        leftRearDrive.setDirection(DcMotor.Direction.FORWARD); //Forward on Comp Bot
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);//Reverse on Comp Bot
+        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);//Forward on Comp Bot
         launcher.setDirection(DcMotor.Direction.FORWARD);
+
 //        armExtension.setDirection(DcMotorSimple.Direction.FORWARD);
 //        armRotate.setDirection(DcMotorSimple.Direction.REVERSE);//opposite so reverse
         //craneRotateChain.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -135,6 +141,7 @@ public class CrusaderHardware extends OpMode {
         rightFrontDrive.setPower(0);
         rightRearDrive.setPower(0);
         launcher.setPower(0);
+
 //        armExtension.setPower(0);
 //        armRotate.setPower(0);
         //craneRotateChain.setPower(0);
@@ -148,6 +155,7 @@ public class CrusaderHardware extends OpMode {
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         launcher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 //        armRotate.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        armExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //craneRotateChain.setMode(DcMotor.Runde.RUN_USMode.RUN_USING_ENCODER);
