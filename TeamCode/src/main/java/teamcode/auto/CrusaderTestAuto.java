@@ -6,22 +6,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Test Autonomous", group="Robot")
+@Autonomous(name="TestAuto", group="Robot")
 //    @Disabled
-public class CrusaderTestAuto extends LinearOpMode {
+public class CrusaderTestAuto<DcMotorAccess> extends LinearOpMode {
 
 
     /* Declare OpMode members. */
 
-    CrusaderTestAuto robot = new CrusaderTestAuto(); //alternative to initializing everything separately in the autonomous
+     CrusaderTestAuto robot; //alternative to initializing everything separately in the autonomous
 
-    private DcMotor         leftFrontDrive;
-    private DcMotor         rightFrontDrive;
-    private DcMotor         leftRearDrive;
-    private DcMotor         rightRearDrive;
+    private DcMotor leftFrontDrive;
+    private DcMotor rightFrontDrive;
+    private DcMotor leftRearDrive;
+    private DcMotor rightRearDrive;
     //private DcMotor         launcher;
 
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -35,7 +35,11 @@ public class CrusaderTestAuto extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 1.89 ;     // old 4 For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.4;      //decrese and increse power
+    static final double     DRIVE_SPEED             = 0.4;      //decrease and increase power
+
+    public CrusaderTestAuto() {
+        robot = new CrusaderTestAuto();
+    }
 
     @Override
     public void runOpMode() {
@@ -63,10 +67,10 @@ public class CrusaderTestAuto extends LinearOpMode {
         leftRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d :%7d",
@@ -92,8 +96,8 @@ public class CrusaderTestAuto extends LinearOpMode {
         //Drive(DRIVE_SPEED, 10, 5, "driveForward");
 
         // encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-//            encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-//encoderDrive(DRIVE_SPEED, leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        //            encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        //encoderDrive(DRIVE_SPEED, leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         //rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         //leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
         //  rightRearDrive.setDirection(DcMotor.Direction.REVERSE); );
@@ -103,7 +107,9 @@ public class CrusaderTestAuto extends LinearOpMode {
         sleep(1000);  // pause to display final telemetry message.
     }
 
-    private void init(HardwareMap hardwareMap) {
+    public void init(HardwareMap hardwareMap) {
+        robot.init(hardwareMap);
+
     }
 
 
@@ -123,22 +129,22 @@ public class CrusaderTestAuto extends LinearOpMode {
 
         int newTargetB;
 
-        robot.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        robot.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        robot.rightRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        robot.leftRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.rightRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.leftRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         int avgFront = (robot.leftFrontDrive.getCurrentPosition() + robot. rightFrontDrive.getCurrentPosition()) / 2;
 
@@ -232,13 +238,13 @@ public class CrusaderTestAuto extends LinearOpMode {
 
             // Turn off RUN_TO_POSITION
 
-            robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
             sleep(250);
@@ -255,22 +261,22 @@ public class CrusaderTestAuto extends LinearOpMode {
 
         int newTargetR;
 
-        robot.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.rightRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.rightRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.leftRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.leftRearDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
-        robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         int avgLeft = (robot.leftFrontDrive.getCurrentPosition() + robot.leftRearDrive.getCurrentPosition()) / 2;
 
@@ -360,13 +366,13 @@ public class CrusaderTestAuto extends LinearOpMode {
 
             // Turn off RUN_TO_POSITION
 
-            robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
             sleep(250);
@@ -467,13 +473,13 @@ public class CrusaderTestAuto extends LinearOpMode {
 
             // Turn off RUN_TO_POSITION
 
-            robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
             sleep(250);

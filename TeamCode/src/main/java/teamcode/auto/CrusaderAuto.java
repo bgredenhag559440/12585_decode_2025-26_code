@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //import org.firstinspires.ftc.teamcode.hardware.CrusaderHardwareTest;
 
-@Autonomous(name="Parking Autonomous", group="Robot")
-//    @Disabled
+@Autonomous(name="Auto", group="Robot")
+//@Disabled
 public class CrusaderAuto extends LinearOpMode {
 
 

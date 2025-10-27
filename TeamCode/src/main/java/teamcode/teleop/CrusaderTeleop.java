@@ -486,7 +486,7 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
     public DcMotor leftFrontDrive;
     public DcMotor rightRearDrive;
     public DcMotor leftRearDrive;
-    public DcMotor launcher;
+    //public DcMotor launcher;
 
     //final double COUNTS_PER_MOTOR_REV = 480;    // eg: TETRIX Motor Encoder
     //final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
