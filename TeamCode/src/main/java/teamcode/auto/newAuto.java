@@ -1,7 +1,6 @@
 package teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -32,7 +31,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
      * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
      */
 
-    @Autonomous(name = "Robot: Auto Drive By Encoder", group = "Robot")
+    @Autonomous(name = "New Auto", group = "Robot")
     //@Disabled
     public class newAuto extends LinearOpMode {
 
@@ -41,6 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         private DcMotor leftRearDrive = null;
         private DcMotor rightFrontDrive = null;
         private DcMotor rightRearDrive = null;
+
         private final ElapsedTime runtime = new ElapsedTime();
 
         // Calculate the COUNTS_PER_INCH for your specific drive train.
@@ -49,9 +49,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
         // This is gearing DOWN for less speed and more torque.
         // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-        static final double COUNTS_PER_MOTOR_REV = 2000;    // eg: TETRIX Motor Encoder
+        static final double COUNTS_PER_MOTOR_REV = 2000;    // for odometry pod eg: TETRIX Motor Encoder
         static final double DRIVE_GEAR_REDUCTION = 1.0;     // No External Gearing.
-        static final double WHEEL_DIAMETER_INCHES = 1.89;     // For figuring circumference
+        static final double WHEEL_DIAMETER_INCHES = 1.89;     // for odometry pod For figuring circumference
         static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
         //counts per inch is 336.8704733
         static final double DRIVE_SPEED = 0.1;
@@ -71,7 +71,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
             leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
             leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
-            rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+            rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
             rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
 
             leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -85,7 +85,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             // Send telemetry message to indicate successful Encoder reset
-            telemetry.addData("Starting at", "%7d :%7d",
+            telemetry.addData("Starting at", "%7d :%7d :%7d :%7d%n",
                     leftFrontDrive.getCurrentPosition(),
                     leftRearDrive.getCurrentPosition(),
                     rightFrontDrive.getCurrentPosition(),
@@ -99,7 +99,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
             //makes the robot go forward
-            encoderDrive(DRIVE_SPEED, 10, 10, -10, 10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+            encoderDrive(DRIVE_SPEED, 10, 10, 10, 10, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
 //            encoderDrive(TURN_SPEED, 12, 12, -12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
 //            encoderDrive(DRIVE_SPEED, -24, -24, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
@@ -150,7 +150,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                 runtime.reset();
                 leftFrontDrive.setPower(Math.abs(speed));
                 leftRearDrive.setPower(Math.abs(speed));
-                rightFrontDrive.setPower(Math.abs(speed));
+                rightFrontDrive.setPower(-Math.abs(speed));
                 rightRearDrive.setPower(Math.abs(speed));
 
                 // keep looping while we are still active, and there is time left, and both motors are running.
@@ -166,13 +166,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                 //another thing that could need ti be changed is seperate the || for the front and rear drives
                 //could change back to &&
                 //could use ! operator
-                //((leftFrontDrive.isBusy() || rightFrontDrive.isBusy()) ||
-                //                                (leftRearDrive.isBusy() || rightRearDrive.isBusy())))
+                //could change back to drive.isBusy()
+
+                //rightFrontDrive is >= instead of <= because it is switched to negative due to funky motor
                 while (opModeIsActive()  &&
                         (leftFrontDrive.getCurrentPosition() <= leftFrontTarget && leftRearDrive.getCurrentPosition() <= leftRearTarget &&
-                                -rightFrontDrive.getCurrentPosition() <= rightFrontTarget && rightRearDrive.getCurrentPosition() <= rightRearTarget))
+                                rightFrontDrive.getCurrentPosition() <= rightFrontTarget && rightRearDrive.getCurrentPosition() <= rightRearTarget) && timeoutS <= runtime.seconds())
                          {
-
                     // Display it for the driver.
                     telemetry.addData("Running to", " %7d :%7d :%7d :%7d%n", leftFrontTarget, leftRearTarget,
                             rightFrontTarget, rightRearTarget);
@@ -181,6 +181,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                     telemetry.addData("Currently at", " %7d :%7d :%7d :%7d%n",
                             leftFrontDrive.getCurrentPosition(), leftRearDrive.getCurrentPosition(),
                             rightFrontDrive.getCurrentPosition(), rightRearDrive.getCurrentPosition());
+
+                    //prints current positions
+                    telemetry.addData("Left Front Drive: ", leftFrontDrive.getCurrentPosition());
+                    telemetry.addData("Left Rear Drive: ", leftRearDrive.getCurrentPosition());
+                    telemetry.addData("right Front Drive: ", rightFrontDrive.getCurrentPosition());
+                    telemetry.addData("right Rear Drive: ", rightRearDrive.getCurrentPosition());
+
                     telemetry.update();
                 }
 
@@ -208,7 +215,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         }
 
-/*        public void aloop() {
+/*        public void loop() {
 
             double drive = 0.1;
             double strafe = 1;
@@ -239,5 +246,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             leftFrontDrive.setPower(speeds[1]);
             rightRearDrive.setPower(speeds[2]);
             leftRearDrive.setPower(speeds[3]);
-        } */
+        }
+ */
     }
