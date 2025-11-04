@@ -2,9 +2,10 @@ package teamcode.hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorGoBildaPinpoint;
 
 
 /* Copyright (c) 2017 FIRST. All rights reserved.
@@ -63,7 +64,9 @@ public class CrusaderHardware extends OpMode {
     public DcMotor  leftRearDrive    = null;
     public DcMotor  rightFrontDrive   = null;
     public DcMotor  rightRearDrive    = null;
-    public DcMotor launcher = null;
+    public SensorGoBildaPinpoint xEncoderWheel = null;
+    public SensorGoBildaPinpoint yEncoderWheel = null;
+    public SensorGoBildaPinpoint turnEncoderWheel = null;
 
     //public DcMotor  armExtension   = null;
     //public DcMotor  armRotate   = null;
@@ -103,7 +106,11 @@ public class CrusaderHardware extends OpMode {
         leftRearDrive  = hwMap.get(DcMotor.class, "leftRearDrive");
         rightFrontDrive  = hwMap.get(DcMotor.class, "rightFrontDrive");
         rightRearDrive  = hwMap.get(DcMotor.class, "rightRearDrive");
-        launcher = hwMap.get(DcMotor.class, "launcher");
+
+        //Define and init sensors
+        xEncoderWheel = hwMap.get(SensorGoBildaPinpoint.class, "xEncoderWheel");
+        yEncoderWheel = hwMap.get(SensorGoBildaPinpoint.class, "yEncoderWheel");
+        turnEncoderWheel = hwMap.get(SensorGoBildaPinpoint.class, "turnEncoderWheel");
 
 //        armExtension = hwMap.get(DcMotor.class, "armExtension");
 //        armRotate = hwMap.get(DcMotor.class, "armRotate");
@@ -128,7 +135,6 @@ public class CrusaderHardware extends OpMode {
         leftRearDrive.setDirection(DcMotor.Direction.FORWARD); //Forward on Comp Bot
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);//Reverse on Comp Bot
         rightRearDrive.setDirection(DcMotor.Direction.FORWARD);//Forward on Comp Bot
-        launcher.setDirection(DcMotor.Direction.FORWARD);
 
 //        armExtension.setDirection(DcMotorSimple.Direction.FORWARD);
 //        armRotate.setDirection(DcMotorSimple.Direction.REVERSE);//opposite so reverse
@@ -140,7 +146,6 @@ public class CrusaderHardware extends OpMode {
         leftRearDrive.setPower(0);
         rightFrontDrive.setPower(0);
         rightRearDrive.setPower(0);
-        launcher.setPower(0);
 
 //        armExtension.setPower(0);
 //        armRotate.setPower(0);
@@ -154,7 +159,6 @@ public class CrusaderHardware extends OpMode {
         leftRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRearDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        launcher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        armRotate.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        armExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -164,7 +168,6 @@ public class CrusaderHardware extends OpMode {
     }
     @Override
     public void loop() {
-
     }
 }
 

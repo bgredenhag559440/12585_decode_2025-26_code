@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorGoBildaPinpoint;
+
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
  * The code is structured as a LinearOpMode
@@ -40,6 +42,9 @@ public class newAutoTest extends LinearOpMode {
     private DcMotor leftRearDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightRearDrive = null;
+    private SensorGoBildaPinpoint xEncoderWheel = null;
+    private SensorGoBildaPinpoint yEncoderWheel = null;
+    private SensorGoBildaPinpoint turnEncoderWheel = null;
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -56,6 +61,7 @@ public class newAutoTest extends LinearOpMode {
     //counts per inch is 336.8704733
     static final double DRIVE_SPEED = 0.1;
     static final double TURN_SPEED = 0.5;
+    static final double STRAFE_SPEED = 0.1;
 
     @Override
     public void runOpMode() {
@@ -65,6 +71,11 @@ public class newAutoTest extends LinearOpMode {
         leftRearDrive = hardwareMap.get(DcMotor.class, "leftRearDrive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
         rightRearDrive = hardwareMap.get(DcMotor.class, "rightRearDrive");
+
+        // Initialize the encoder wheels for telemetry
+        xEncoderWheel = hardwareMap.get(SensorGoBildaPinpoint.class, "xEncoderWheel");
+        yEncoderWheel = hardwareMap.get(SensorGoBildaPinpoint.class, "yEncoderWheel");
+        turnEncoderWheel = hardwareMap.get(SensorGoBildaPinpoint.class, "turnEncoderWheel");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -86,10 +97,7 @@ public class newAutoTest extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at", "%7d :%7d :%7d :%7d%n",
-                leftFrontDrive.getCurrentPosition(),
-                leftRearDrive.getCurrentPosition(),
-                rightFrontDrive.getCurrentPosition(),
-                rightRearDrive.getCurrentPosition());
+                xEncoderWheel.getCurrentPosition();
         telemetry.update();
 
         // Wait for the game to start (driver presses START)
@@ -98,10 +106,10 @@ public class newAutoTest extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
-        //makes the robot go forward
+        //makes the robot go forward, turn, and backward
         encoderDrive(DRIVE_SPEED, 10, 10, 10, 10, 2.0);  // S1: Forward 47 Inches with 5 Sec timeout
-//            encoderDrive(TURN_SPEED, 12, 12, -12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-//            encoderDrive(DRIVE_SPEED, -24, -24, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        encoderDrive(TURN_SPEED, 12, 12, -12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        encoderDrive(STRAFE_SPEED, -24, -24, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
 //            if ((leftFrontDrive.getCurrentPosition() == leftFrontTarget))
 
@@ -169,10 +177,9 @@ public class newAutoTest extends LinearOpMode {
             //could change back to drive.isBusy()
 
             //rightFrontDrive is >= instead of <= because it is switched to negative due to funky motor
-            while (opModeIsActive()  &&
+            while (opModeIsActive() &&
                     (leftFrontDrive.getCurrentPosition() <= leftFrontTarget && leftRearDrive.getCurrentPosition() <= leftRearTarget &&
-                            rightFrontDrive.getCurrentPosition() <= rightFrontTarget && rightRearDrive.getCurrentPosition() <= rightRearTarget) && timeoutS <= runtime.seconds())
-            {
+                            rightFrontDrive.getCurrentPosition() <= rightFrontTarget && rightRearDrive.getCurrentPosition() <= rightRearTarget) && timeoutS <= runtime.seconds()) {
                 // Display it for the driver.
                 telemetry.addData("Running to", " %7d :%7d :%7d :%7d%n", leftFrontTarget, leftRearTarget,
                         rightFrontTarget, rightRearTarget);
@@ -214,39 +221,4 @@ public class newAutoTest extends LinearOpMode {
         }
 
     }
-
-/*        public void loop() {
-
-            double drive = 0.1;
-            double strafe = 1;
-            double twist = 1;
-            //formula to allow McKenna wheels to strafe and spin
-            double[] speeds = {
-                    (-drive + strafe + twist), //right front drive
-                    (-drive - strafe - twist), //left front drive
-                    (drive + strafe - twist), //right rear drive
-                    (-drive + strafe - twist) //left rear drive
-            };
-
-            //sets the speed of each wheel
-            double max = Math.abs(speeds[0]);
-            if (max < Math.abs(speeds[0])) max = Math.abs(speeds[0]);
-            if (max < Math.abs(speeds[1])) max = Math.abs(speeds[1]);
-            if (max < Math.abs(speeds[2])) max = Math.abs(speeds[2]);
-            if (max < Math.abs(speeds[3])) max = Math.abs(speeds[3]);
-
-            if (max > 1) {
-                for (int i = 0; i < speeds.length; i++) { // Correct loop condition
-                    speeds[i] /= max;
-                }
-            }
-            //assigns each wheel to an item in the speeds list
-            //keep setPower because it is a DcMotor, not an audioManager
-            rightFrontDrive.setPower(speeds[0]);
-            leftFrontDrive.setPower(speeds[1]);
-            rightRearDrive.setPower(speeds[2]);
-            leftRearDrive.setPower(speeds[3]);
-        }
- */
 }
-
