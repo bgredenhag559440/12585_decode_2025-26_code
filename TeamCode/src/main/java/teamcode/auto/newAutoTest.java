@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorGoBildaPinpoint;
-
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
  * The code is structured as a LinearOpMode
@@ -42,9 +40,6 @@ public class newAutoTest extends LinearOpMode {
     private DcMotor leftRearDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightRearDrive = null;
-    private SensorGoBildaPinpoint xEncoderWheel = null;
-    private SensorGoBildaPinpoint yEncoderWheel = null;
-    private SensorGoBildaPinpoint turnEncoderWheel = null;
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -72,11 +67,6 @@ public class newAutoTest extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
         rightRearDrive = hardwareMap.get(DcMotor.class, "rightRearDrive");
 
-        // Initialize the encoder wheels for telemetry
-        xEncoderWheel = hardwareMap.get(SensorGoBildaPinpoint.class, "xEncoderWheel");
-        yEncoderWheel = hardwareMap.get(SensorGoBildaPinpoint.class, "yEncoderWheel");
-        turnEncoderWheel = hardwareMap.get(SensorGoBildaPinpoint.class, "turnEncoderWheel");
-
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -96,12 +86,10 @@ public class newAutoTest extends LinearOpMode {
         rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at", "%7d :%7d :%7d :%7d%n",
-                xEncoderWheel.getCurrentPosition();
-        telemetry.update();
-
-        // Wait for the game to start (driver presses START)
-        waitForStart();
+//        telemetry.addData("Starting at", "%7d :%7d :%7d :%7d%n",
+//            telemetry.update();
+                // Wait for the game to start (driver presses START)
+                waitForStart();
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)

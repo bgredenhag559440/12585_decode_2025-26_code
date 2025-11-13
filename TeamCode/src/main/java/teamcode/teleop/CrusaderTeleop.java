@@ -472,8 +472,6 @@
 //
 package teamcode.teleop;
 
-import android.media.AudioManager;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -538,8 +536,8 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
 
     @Override
     public void loop() {
-        double drive = -0.8 * gamepad1.left_stick_y;
-        double strafe = 0.8 * gamepad1.left_stick_x;
+        double drive = -1 * gamepad1.left_stick_y;
+        double strafe = 1 * gamepad1.left_stick_x;
         double twist = 0.7 * gamepad1.right_stick_x;
         //formula to allow McKenna wheels to strafe and spin
         double[] speeds = {

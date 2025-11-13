@@ -114,7 +114,5 @@ public class SensorGoBildaPinpoint extends OpMode {
         pinpoint.resetPosAndIMU();
     }
 
-    public Object getCurrentPosition() {
 
-    }
 }

@@ -150,7 +150,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                 runtime.reset();
                 leftFrontDrive.setPower(Math.abs(speed));
                 leftRearDrive.setPower(Math.abs(speed));
-                rightFrontDrive.setPower(-Math.abs(speed));
+                rightFrontDrive.setPower(Math.abs(speed));
                 rightRearDrive.setPower(Math.abs(speed));
 
                 // keep looping while we are still active, and there is time left, and both motors are running.
@@ -163,7 +163,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                 //might need to add && (runtime.seconds() > timeoutS)
                 //to the while
 
-                //another thing that could need ti be changed is seperate the || for the front and rear drives
+                //another thing that could need ti be changed is separate the || for the front and rear drives
                 //could change back to &&
                 //could use ! operator
                 //could change back to drive.isBusy()
@@ -214,38 +214,4 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             }
 
         }
-
-/*        public void loop() {
-
-            double drive = 0.1;
-            double strafe = 1;
-            double twist = 1;
-            //formula to allow McKenna wheels to strafe and spin
-            double[] speeds = {
-                    (-drive + strafe + twist), //right front drive
-                    (-drive - strafe - twist), //left front drive
-                    (drive + strafe - twist), //right rear drive
-                    (-drive + strafe - twist) //left rear drive
-            };
-
-            //sets the speed of each wheel
-            double max = Math.abs(speeds[0]);
-            if (max < Math.abs(speeds[0])) max = Math.abs(speeds[0]);
-            if (max < Math.abs(speeds[1])) max = Math.abs(speeds[1]);
-            if (max < Math.abs(speeds[2])) max = Math.abs(speeds[2]);
-            if (max < Math.abs(speeds[3])) max = Math.abs(speeds[3]);
-
-            if (max > 1) {
-                for (int i = 0; i < speeds.length; i++) { // Correct loop condition
-                    speeds[i] /= max;
-                }
-            }
-            //assigns each wheel to an item in the speeds list
-            //keep setPower because it is a DcMotor, not an audioManager
-            rightFrontDrive.setPower(speeds[0]);
-            leftFrontDrive.setPower(speeds[1]);
-            rightRearDrive.setPower(speeds[2]);
-            leftRearDrive.setPower(speeds[3]);
-        }
- */
     }
