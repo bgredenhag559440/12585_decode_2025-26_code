@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import teamcode.hardware.CrusaderHardware;
 
-@TeleOp(name="Teleop", group="Launchbot") //is you want to duplicate change this name
+@TeleOp(name="TeleopTwo", group="Launchbot") //is you want to duplicate change this name
 //@Disabled;
-public class CrusaderTeleop<DcMotorAccess> extends OpMode {
+public class teleopTwo<DcMotorAccess> extends OpMode {
 
     public DcMotor rightFrontDrive;
     public DcMotor leftFrontDrive;
@@ -47,17 +47,8 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
 
     int driveMode= 0;
 
-    double shootingPower = 0.582;
-    //setting power to shot from back
-    //wheels at the back of the big triangle
-    double longShotPower = 0.9;
-    //setting power for a long shot with
-    //wheel touching back wall
-
-    double initalPause = 550; //pause before spinner moves ball
-    double shootingSpinTime = 2620; //time for spinner to rotate 1.5 rotations
-
-    int shootStep = 0;
+    double shootingPower = 0.5;
+    int shootStep = 0; //0 = idle, 1 = shooting
 
     //following code runs when driver hits init
     @Override
@@ -89,7 +80,6 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         leftShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        gate.setPosition(1);
     }
 
     @Override
@@ -125,7 +115,7 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         leftRearDrive.setPower(speeds[3]);
 
         //opens gate
-        if(gamepad1.right_bumper){
+        if (gamepad1.right_bumper){
             gate.setPosition(1);
         }
 
@@ -145,7 +135,8 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
             leftShoot.setPower(0);
             rightShoot.setPower(0);
         }
-        //turns on spinner wheel
+
+        //turns on spinner
         if(gamepad2.x){
             spinner.setPosition(-1);
         }
@@ -167,51 +158,45 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
             leftArm.setPosition(1);
         }
 
-        // Trigger for short shot
+        // Trigger
         if(gamepad2.right_bumper && shootStep == 0) {
-            shootStep++;
+            shootStep = 1;
             spinnerTimer.reset();
         }
         // State 1: Warmup
         if (shootStep == 1) {
             leftShoot.setPower(shootingPower);
             rightShoot.setPower(-shootingPower);
-            if (spinnerTimer.milliseconds() >= initalPause) {// 550
-                spinner.setPosition(-0.75);
-                shootStep++;
+            if (spinnerTimer.milliseconds() >= 350) {
+                spinner.setPosition(-1);
             }
         }
-        if (spinnerTimer.milliseconds() >= 600 && shootStep == 2){
-            spinner.setPosition(0.5);
-            shootStep++;
-        }
-        if (spinnerTimer.milliseconds() >= shootingSpinTime && shootStep == 3) {//2510
+        if (spinnerTimer.milliseconds() >= 2510) {
             leftShoot.setPower(0);
             rightShoot.setPower(0);
+            spinner.setPosition(0.5);
             shootStep = 0;
         }
 
-        // Trigger long shot
+        // Trigger
         if(gamepad2.left_bumper && shootStep == 0) {
-            shootStep++;
+            shootStep = 1;
             spinnerTimer.reset();
         }
         // State 1: Warmup
         if (shootStep == 1) {
-            leftShoot.setPower(longShotPower);
-            rightShoot.setPower(-longShotPower);
-            if (spinnerTimer.milliseconds() >= initalPause) {//350
+            leftShoot.setPower(0.7);
+            rightShoot.setPower(-0.7);
+            if (spinnerTimer.milliseconds() >= 350) {
                 spinner.setPosition(-1);
-                shootStep++;
             }
         }
-        if (spinnerTimer.milliseconds() >= shootingSpinTime && shootStep == 2) {//2510
+        if (spinnerTimer.milliseconds() >= 2510) {
             leftShoot.setPower(0);
             rightShoot.setPower(0);
             spinner.setPosition(0.5);
             shootStep = 0;
         }
-
     }
 
     @Override
@@ -221,5 +206,10 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         leftFrontDrive.setPower(0);
         rightRearDrive.setPower(0);
         leftRearDrive.setPower(0);
+
+        // Set the launcher motor power to zero (assuming it's a moving part)
+        //if (launcher != null) {
+        //    launcher.setPower(0);
+        //}
     }
 }

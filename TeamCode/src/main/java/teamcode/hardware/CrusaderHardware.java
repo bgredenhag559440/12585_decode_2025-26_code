@@ -3,6 +3,7 @@ package teamcode.hardware;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorGoBildaPinpoint;
@@ -64,9 +65,9 @@ public class CrusaderHardware extends OpMode {
     public DcMotor  leftRearDrive    = null;
     public DcMotor  rightFrontDrive   = null;
     public DcMotor  rightRearDrive    = null;
-    public SensorGoBildaPinpoint xEncoderWheel = null;
-    public SensorGoBildaPinpoint yEncoderWheel = null;
-    public SensorGoBildaPinpoint turnEncoderWheel = null;
+    public Servo gate = null;
+
+
 
     //public DcMotor  armExtension   = null;
     //public DcMotor  armRotate   = null;
@@ -107,10 +108,9 @@ public class CrusaderHardware extends OpMode {
         rightFrontDrive  = hwMap.get(DcMotor.class, "rightFrontDrive");
         rightRearDrive  = hwMap.get(DcMotor.class, "rightRearDrive");
 
-        //Define and init sensors
-        xEncoderWheel = hwMap.get(SensorGoBildaPinpoint.class, "xEncoderWheel");
-        yEncoderWheel = hwMap.get(SensorGoBildaPinpoint.class, "yEncoderWheel");
-        turnEncoderWheel = hwMap.get(SensorGoBildaPinpoint.class, "turnEncoderWheel");
+        //Define and init servos
+        gate = hwMap.get(Servo.class, "gate");
+
 
 //        armExtension = hwMap.get(DcMotor.class, "armExtension");
 //        armRotate = hwMap.get(DcMotor.class, "armRotate");

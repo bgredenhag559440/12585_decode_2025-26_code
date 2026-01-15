@@ -3,6 +3,7 @@ package teamcode.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -17,15 +18,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * tracking, though the initial move uses the drive motor encoders as required by RUN_TO_POSITION.
  */
 
-@Autonomous(name = "Gemeni Auto", group = "Robot")
+@Autonomous(name = "Shoot Auto 1", group = "Robot")
 //@Disabled
-public class geminiAuto extends LinearOpMode { // Renamed class for clarity
+public class shootAuto1 extends LinearOpMode { // Renamed class for clarity
 
     /* Declare OpMode members for Drive Motors. */
     private DcMotor leftFrontDrive = null;
     private DcMotor leftRearDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightRearDrive = null;
+    private Servo gate = null;
 
     /* Declare OpMode members for Odometry Pods (Dead Wheels).
      * NOTE: Declared as DcMotor to read encoder counts, assuming they are configured as such
@@ -57,6 +59,7 @@ public class geminiAuto extends LinearOpMode { // Renamed class for clarity
         leftRearDrive = hardwareMap.get(DcMotor.class, "leftRearDrive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
         rightRearDrive = hardwareMap.get(DcMotor.class, "rightRearDrive");
+        gate = hardwareMap.get(Servo.class, "gate");
 
         // Initialize the odometry dead wheel encoders (for positional tracking/future use)
         // These are declared in CrusaderHardware.java, using the same names.
@@ -101,6 +104,7 @@ public class geminiAuto extends LinearOpMode { // Renamed class for clarity
         // Wait for the game to start (driver presses START)
         waitForStart();
 
+
         // --- Autonomous Path Execution ---
 
         // STEP 1: Drive Forward 5.0 Inches using the encoderDrive method
@@ -108,9 +112,9 @@ public class geminiAuto extends LinearOpMode { // Renamed class for clarity
         //encoderDrive(DRIVE_SPEED, 5.0, 5.0, 5.0, 5.0, 0.5);  // S1: Forward 5 Inches with .8 Sec timeout
         //encoderDrive(DRIVE_SPEED, -5.0, -5.0, -5.0, -5.0, 0.5); //backwards 5 inches with .8 second timeout
 
-        encoderDrive(STRAFE_SPEED, strafe("right", 0.8));
-        encoderDrive(STRAFE_SPEED, strafe("left", 0.8));
-        encoderDrive(TURN_SPEED, -5.0, -5.0, 5.0, 5.0, 0.5);//right front is previously negative so its a double negative which is why its put as negative but it acts like its positive
+        gate.setPosition(1);
+        encoderDrive(STRAFE_SPEED, turn("left", 0.6));
+        //encoderDrive(TURN_SPEED, -5.0, -5.0, 5.0, 5.0, 0.5); //right front is previously negative so its a double negative which is why its put as negative but it acts like its positive
 
         // The original desired path:
         // encoderDrive(DRIVE_SPEED, 48, 48, 48, 48, 5.0);  // S1: Forward 48 Inches with 5 Sec timeout
@@ -126,9 +130,21 @@ public class geminiAuto extends LinearOpMode { // Renamed class for clarity
     public double[] strafe(String direction, double timeoutS) {
         double[] values = new double[5];
         if (direction.equalsIgnoreCase("left")) {
-            values = new double[]{-1.0, 1.0, 1.0, -1.0, timeoutS};
-        } else if (direction.equalsIgnoreCase("right")) {
             values = new double[]{1.0, -1.0, -1.0, 1.0, timeoutS};
+        } else if (direction.equalsIgnoreCase("right")) { //right does not work bc one of the wheels doesn't turn on the ground i think
+            values = new double[]{-1.0, 1.0, 1.0, -1.0, timeoutS};
+        }
+        return values;
+    }
+
+    public double[] turn(String direction, double timeoutS) {
+        double[] values = new double[5];
+        if (direction.equalsIgnoreCase("left")) {
+            // {lf, lr, rf, rr}
+            values = new double[]{-1.0, -1.0, 1.0, 1.0, timeoutS};
+        } else if (direction.equalsIgnoreCase("right")) { //right does not work bc one of the wheels doesn't turn on the ground i think
+            // {lf, lr, rf, rr}
+            values = new double[]{1.0, 1.0, -1.0, -1.0, timeoutS};
         }
         return values;
     }
@@ -283,3 +299,4 @@ public class geminiAuto extends LinearOpMode { // Renamed class for clarity
         }
     }
 }
+
