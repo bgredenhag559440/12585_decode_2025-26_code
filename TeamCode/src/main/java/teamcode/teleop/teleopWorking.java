@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import teamcode.hardware.CrusaderHardware;
 
-@TeleOp(name="TeleopTwo", group="Launchbot") //is you want to duplicate change this name
+@TeleOp(name="TeleopWorking", group="Launchbot") //is you want to duplicate change this name
 //@Disabled;
-public class teleopTwo<DcMotorAccess> extends OpMode {
+public class teleopWorking<DcMotorAccess> extends OpMode {
 
     public DcMotor rightFrontDrive;
     public DcMotor leftFrontDrive;
@@ -47,7 +47,8 @@ public class teleopTwo<DcMotorAccess> extends OpMode {
 
     int driveMode= 0;
 
-    double shootingPower = 0.5;
+    double shortShootingPower = 0.582;
+    double longShootingPower = 0.9;
     int shootStep = 0; //0 = idle, 1 = shooting
 
     //following code runs when driver hits init
@@ -124,12 +125,6 @@ public class teleopTwo<DcMotorAccess> extends OpMode {
             gate.setPosition(0.5);
         }
 
-        //turns on shooter
-        if(gamepad2.right_bumper){
-            leftShoot.setPower(shootingPower);
-            rightShoot.setPower(-shootingPower);
-        }
-
         //turns off shooter
         if(gamepad2.left_bumper) {
             leftShoot.setPower(0);
@@ -165,8 +160,8 @@ public class teleopTwo<DcMotorAccess> extends OpMode {
         }
         // State 1: Warmup
         if (shootStep == 1) {
-            leftShoot.setPower(shootingPower);
-            rightShoot.setPower(-shootingPower);
+            leftShoot.setPower(longShootingPower);
+            rightShoot.setPower(-longShootingPower);
             if (spinnerTimer.milliseconds() >= 350) {
                 spinner.setPosition(-1);
             }
@@ -185,8 +180,8 @@ public class teleopTwo<DcMotorAccess> extends OpMode {
         }
         // State 1: Warmup
         if (shootStep == 1) {
-            leftShoot.setPower(0.7);
-            rightShoot.setPower(-0.7);
+            leftShoot.setPower(shortShootingPower);
+            rightShoot.setPower(-shortShootingPower);
             if (spinnerTimer.milliseconds() >= 350) {
                 spinner.setPosition(-1);
             }

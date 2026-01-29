@@ -20,7 +20,7 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
     public DcMotor leftShoot;
     public DcMotor rightShoot;
     public Servo gate;
-    public Servo spinner;
+    public Servo spinner; //servo, NOT CR SERVO ANYMORE
 
     public Servo rightArm;
     public Servo leftArm;
@@ -41,21 +41,17 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
     double countsPerInch = (countsPerMotorRev * driveGearReduction) / (wheelDiameterInches * 3.14159);
     double driveSpeed = 2;
 
-    int height;
-
-    int liftTarget;
-
     int driveMode= 0;
 
     double shootingPower = 0.582;
     //setting power to shot from back
     //wheels at the back of the big triangle
-    double longShotPower = 0.9;
+    double longShotPower = 0.694;
     //setting power for a long shot with
     //wheel touching back wall
-
-    double initalPause = 550; //pause before spinner moves ball
-    double shootingSpinTime = 2620; //time for spinner to rotate 1.5 rotations
+    double spinnerBase = 0.65;
+    double spinnerFire = 0.4;
+    double spinnerReload = 1;
 
     int shootStep = 0;
 
@@ -90,6 +86,9 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         rightShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         gate.setPosition(1);
+        rightArm.setPosition(0.3);
+        leftArm.setPosition(0.7);
+        spinner.setPosition(spinnerBase);
     }
 
     @Override
@@ -134,25 +133,21 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
             gate.setPosition(0.5);
         }
 
-        //turns on shooter
+        //turns long shot shooter
         if(gamepad2.right_bumper){
+            leftShoot.setPower(longShotPower);
+            rightShoot.setPower(-longShotPower);
+        }
+
+        //turns on short shot shooter
+        if(gamepad2.left_bumper) {
             leftShoot.setPower(shootingPower);
             rightShoot.setPower(-shootingPower);
         }
 
-        //turns off shooter
-        if(gamepad2.left_bumper) {
+        if(gamepad2.y){
             leftShoot.setPower(0);
             rightShoot.setPower(0);
-        }
-        //turns on spinner wheel
-        if(gamepad2.x){
-            spinner.setPosition(-1);
-        }
-
-        //turns spinner wheel off
-        if(gamepad2.y){
-            spinner.setPosition(0.5);
         }
 
         //arm push ball into shooter position
@@ -167,8 +162,50 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
             leftArm.setPosition(1);
         }
 
+
+        if(gamepad2.a && shootStep == 0){
+            spinner.setPosition(spinnerFire);
+            shootStep = 1;
+            spinnerTimer.reset();
+        }
+
+        //timer for shooting and reloading spinner for a button
+        if(shootStep == 1 && spinnerTimer.milliseconds() >= 100){
+            spinner.setPosition(spinnerReload);
+            spinnerTimer.reset();
+            shootStep++;
+        } else if(shootStep == 2 && spinnerTimer.milliseconds() >= 500){
+            rightArm.setPosition(0);
+            leftArm.setPosition(1);
+            spinnerTimer.reset();
+            shootStep++;
+        } else if(shootStep == 3 && spinnerTimer.milliseconds() >= 2500){
+            rightArm.setPosition(0.3);
+            leftArm.setPosition(0.7);
+            spinnerTimer.reset();
+            shootStep++;
+        } else if(shootStep == 4 && spinnerTimer.milliseconds() >= 500){
+            spinner.setPosition(spinnerBase);
+            shootStep = 0;
+        }
+
+        if(gamepad2.b && shootStep == 0){
+            spinner.setPosition(spinnerFire);
+            shootStep = 10;
+            spinnerTimer.reset();
+        }
+
+        //timer between shooting and resetting spinner for b button
+        if (shootStep == 10 && spinnerTimer.milliseconds() >= 100){
+            spinner.setPosition(spinnerBase);
+            leftShoot.setPower(0);
+            rightShoot.setPower(0);
+            shootStep = 0;
+        }
+
+
         // Trigger for short shot
-        if(gamepad2.right_bumper && shootStep == 0) {
+/*        if(gamepad2.right_bumper && shootStep == 0) {
             shootStep++;
             spinnerTimer.reset();
         }
@@ -176,7 +213,7 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         if (shootStep == 1) {
             leftShoot.setPower(shootingPower);
             rightShoot.setPower(-shootingPower);
-            if (spinnerTimer.milliseconds() >= initalPause) {// 550
+            if (spinnerTimer.milliseconds() >= initialPause) {// 550
                 spinner.setPosition(-0.75);
                 shootStep++;
             }
@@ -200,7 +237,7 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
         if (shootStep == 1) {
             leftShoot.setPower(longShotPower);
             rightShoot.setPower(-longShotPower);
-            if (spinnerTimer.milliseconds() >= initalPause) {//350
+            if (spinnerTimer.milliseconds() >= initialPause) {//350
                 spinner.setPosition(-1);
                 shootStep++;
             }
@@ -211,7 +248,7 @@ public class CrusaderTeleop<DcMotorAccess> extends OpMode {
             spinner.setPosition(0.5);
             shootStep = 0;
         }
-
+*/
     }
 
     @Override

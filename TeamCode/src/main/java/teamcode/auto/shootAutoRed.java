@@ -18,9 +18,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * tracking, though the initial move uses the drive motor encoders as required by RUN_TO_POSITION.
  */
 
-@Autonomous(name = "Shoot Auto Blue", group = "Robot")
+@Autonomous(name = "Shoot Auto Red", group = "Robot")
 //@Disabled
-public class shootAuto1 extends LinearOpMode { // Renamed class for clarity
+public class shootAutoRed extends LinearOpMode { // Renamed class for clarity
 
     /* Declare OpMode members for Drive Motors. */
     private DcMotor leftFrontDrive = null;
@@ -177,7 +177,7 @@ public class shootAuto1 extends LinearOpMode { // Renamed class for clarity
 
         spinner.setPosition(.65);
 
-        encoderDrive(TURN_SPEED, strafe("left", 1));
+        encoderDrive(TURN_SPEED, strafe("right", 1));
 
 
         //encoderDrive(TURN_SPEED, turn("left", 0.6));
